@@ -13,6 +13,8 @@ namespace CoreUi.Pages
 
         public abstract string Uri { get; }
 
+        public abstract Uri BaseUri { get; }
+
         public void Initialize(IBrowser browser) {
             WebDriver = browser.WebDriver;
             Browser = browser;

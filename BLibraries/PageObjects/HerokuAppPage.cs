@@ -7,12 +7,15 @@ namespace BLibraries.PageObjects {
     {
         public IElement FormAuthenticationLink =>
             Browser.FindElement<Element>(By.XPath("//a[text()='Form Authentication']"));
-        
-        public IElement AddOrRemoveElementLink => Browser.FindElement<Element>(By.XPath("//a[text()='Add/Remove Elements']"));
+
+        public IElement AddOrRemoveElementLink =>
+            Browser.FindElement<Element>(By.XPath("//a[text()='Add/Remove Elements']"));
 
         public IElement CheckBoxesLink => Browser.FindElement<Element>(By.XPath("//a[text()='Checkboxes']"));
 
 
         public override string Uri => string.Empty;
+
+        public override Uri BaseUri => new("https://the-internet.herokuapp.com/");
     }
 }

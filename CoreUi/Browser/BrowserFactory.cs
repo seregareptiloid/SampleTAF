@@ -7,8 +7,6 @@ namespace CoreUi.Browser
 {
     public static class BrowserFactory
     {
-        private static Uri baseUri = new("https://the-internet.herokuapp.com/");
-
         private static readonly string[] DefaultOptions =
         {
             "--disable-extensions", "--disable-notifications", "--no-sandbox", "--disable-save-password-bubble",
@@ -21,7 +19,7 @@ namespace CoreUi.Browser
 
             ChromeDriver driver = new ChromeDriver(options);
 
-            return new Browser(driver, baseUri);
+            return new Browser(driver);
         }
 
         private static ChromeOptions CreateChromeOptions() {

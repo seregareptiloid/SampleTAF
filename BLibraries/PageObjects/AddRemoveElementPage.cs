@@ -11,5 +11,7 @@ namespace BLibraries.PageObjects {
             Browser.FindElements<Element>(By.XPath("//button[text()= 'Add Element']"));
         
         public override string Uri => "add_remove_elements";
+
+        public override Uri BaseUri => new("https://the-internet.herokuapp.com/");
     }
 }

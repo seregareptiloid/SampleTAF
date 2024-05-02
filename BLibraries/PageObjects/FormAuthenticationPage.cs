@@ -16,5 +16,7 @@ namespace BLibraries.PageObjects {
         public IElement LogoutButton => Browser.FindElement<Element>(By.XPath("//i[contains(text(), 'Logout')]"));
 
         public override string Uri => "login";
+
+        public override Uri BaseUri => new("https://the-internet.herokuapp.com/");
     }
 }

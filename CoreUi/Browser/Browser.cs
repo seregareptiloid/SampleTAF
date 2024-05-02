@@ -1,6 +1,9 @@
-﻿using CoreUi.Elements;
+﻿using System.Diagnostics;
+using CoreUi.Elements;
 using CoreUi.Pages;
 using CoreUi.Utils;
+using Deque.AxeCore.Selenium;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -9,7 +12,6 @@ using Serilog;
 
 namespace CoreUi.Browser {
     public class Browser : IBrowser {
-        private readonly Uri baseUrl;
         private static readonly ILogger logger = Log.ForContext(typeof(Browser));
 
         private const int Timeout = 500;
@@ -17,21 +19,22 @@ namespace CoreUi.Browser {
 
         public IWebDriver WebDriver { get; }
 
+        public AxeBuilder AxeBuilder { get; }
+
         public Actions BrowserActions => new(WebDriver);
 
-        public Browser(IWebDriver webDriver, Uri baseUrl) {
+        public Browser(IWebDriver webDriver) {
             WebDriver = webDriver;
-            this.baseUrl = baseUrl;
+            AxeBuilder = new AxeBuilder(WebDriver);
         }
 
-            public TPage GoToPage<TPage>() where TPage : class, IPage, new()
-        {
+        public TPage GoToPage<TPage>() where TPage : class, IPage, new() {
             return GoTo(typeof(TPage)) as TPage;
         }
 
         private IPage GoTo(Type type) {
             Page page = GetPage(type);
-            string fullUrl = baseUrl + page.Uri;
+            string fullUrl = page.BaseUri + page.Uri;
             WebDriver.Url = fullUrl;
             WebDriver.Navigate().GoToUrl(fullUrl);
             return page;
@@ -83,16 +86,14 @@ namespace CoreUi.Browser {
         }
 
 
-        public TPage WaitForSubmit<TPage>() where TPage : class, IPage, new()
-        {
+        public TPage WaitForSubmit<TPage>() where TPage : class, IPage, new() {
             WaitForPageToLoad();
             TPage page = GetCurrentUnsafe<TPage>();
             logger.Information($"Page {typeof(TPage).Name} was loaded after form submit");
             return page;
         }
 
-        public string ExecuteScript(string script, params object[] args)
-        {
+        public string ExecuteScript(string script, params object[] args) {
             try {
                 return (string)((IJavaScriptExecutor)WebDriver).ExecuteScript(script);
             }
@@ -101,8 +102,12 @@ namespace CoreUi.Browser {
             }
         }
 
-        public void WaitForPageToLoad() {
-            Wait.UntilEquals("Complete",
+        public void WaitForPageToLoad()
+        {
+           var result = JsonConvert.SerializeObject(AxeBuilder.Analyze());
+           File.WriteAllText("Accessibility.txt", result);
+           Process.Start("notepad.exe", "Accessibility.txt");
+           Wait.UntilEquals("Complete",
                 ((IJavaScriptExecutor)WebDriver).ExecuteScript("return document.readyState").ToString,
                 Timeout);
         }

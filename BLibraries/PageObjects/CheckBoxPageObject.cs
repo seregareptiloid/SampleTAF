@@ -17,5 +17,6 @@ namespace BLibraries.PageObjects {
             CheckBoxOne.Check();
             CheckBoxTwo.Uncheck();
         }
+        public override Uri BaseUri => new("https://the-internet.herokuapp.com/");
     }
 }
